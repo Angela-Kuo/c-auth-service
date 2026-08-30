@@ -1,14 +1,16 @@
-import { callBService } from '../utils/apiAdapter.js';
+import { Response, NextFunction } from 'express';
+import { callBService } from '../utils/apiAdapter';
+import { AuthenticatedRequest } from '../middlewares/authMiddleware';
 
-export async function getGroupMembers(req, res, next) {
+export async function getGroupMembers(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
-    const queryString = new URLSearchParams(req.query).toString();
+    const queryString = new URLSearchParams(req.query as Record<string, string>).toString();
     const endpoint = queryString ? `/group-members?${queryString}` : '/group-members';
 
     const result = await callBService({
       method: 'GET',
       endpoint,
-      currentUid: req.user.uid,
+      currentUid: req.user?.uid,
     });
     return res.status(result.status).json(result.success ? result.data : { error: result.error });
   } catch (error) {
@@ -16,13 +18,13 @@ export async function getGroupMembers(req, res, next) {
   }
 }
 
-export async function addMemberToGroup(req, res, next) {
+export async function addMemberToGroup(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
     const result = await callBService({
       method: 'POST',
       endpoint: '/group-members',
       data: req.body,
-      currentUid: req.user.uid,
+      currentUid: req.user?.uid,
     });
     return res.status(result.status).json(result.success ? result.data : { error: result.error });
   } catch (error) {
@@ -30,13 +32,13 @@ export async function addMemberToGroup(req, res, next) {
   }
 }
 
-export async function removeMemberFromGroup(req, res, next) {
+export async function removeMemberFromGroup(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
     const result = await callBService({
       method: 'DELETE',
       endpoint: '/group-members',
       data: req.body,
-      currentUid: req.user.uid,
+      currentUid: req.user?.uid,
     });
     return res.status(result.status).json(result.success ? result.data : { error: result.error });
   } catch (error) {

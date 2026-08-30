@@ -1,15 +1,34 @@
-import { config } from '../config/env.js';
+import { config } from '../config/env';
 
-export async function callBService({ method, endpoint, data = null, currentUid = null }) {
-  const headers = {
+export interface CallBServiceOptions {
+  method: string;
+  endpoint: string;
+  data?: any;
+  currentUid?: number | string | null;
+}
+
+export interface ApiAdapterResult {
+  success: boolean;
+  status: number;
+  data?: any;
+  error?: string;
+}
+
+export async function callBService({
+  method,
+  endpoint,
+  data = null,
+  currentUid = null,
+}: CallBServiceOptions): Promise<ApiAdapterResult> {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };
 
   if (currentUid !== null && currentUid !== undefined) {
-    headers['x-user-id'] = String(currentUid); // 轉發操作者的 uid 給 B[cite: 2]
+    headers['x-user-id'] = String(currentUid);
   }
 
-  const options = {
+  const options: RequestInit = {
     method,
     headers,
   };

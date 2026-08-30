@@ -1,14 +1,16 @@
-import { callBService } from '../utils/apiAdapter.js';
+import { Response, NextFunction } from 'express';
+import { callBService } from '../utils/apiAdapter';
+import { AuthenticatedRequest } from '../middlewares/authMiddleware';
 
-export async function getPermissions(req, res, next) {
+export async function getPermissions(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
-    const queryString = new URLSearchParams(req.query).toString();
+    const queryString = new URLSearchParams(req.query as Record<string, string>).toString();
     const endpoint = queryString ? `/permissions?${queryString}` : '/permissions';
 
     const result = await callBService({
       method: 'GET',
       endpoint,
-      currentUid: req.user.uid,
+      currentUid: req.user?.uid,
     });
     return res.status(result.status).json(result.success ? result.data : { error: result.error });
   } catch (error) {
@@ -16,13 +18,13 @@ export async function getPermissions(req, res, next) {
   }
 }
 
-export async function updatePermissions(req, res, next) {
+export async function updatePermissions(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
     const result = await callBService({
       method: 'POST',
       endpoint: '/permissions',
       data: req.body,
-      currentUid: req.user.uid,
+      currentUid: req.user?.uid,
     });
     return res.status(result.status).json(result.success ? result.data : { error: result.error });
   } catch (error) {

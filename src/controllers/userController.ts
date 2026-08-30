@@ -1,11 +1,13 @@
-import { callBService } from '../utils/apiAdapter.js';
+import { Response, NextFunction } from 'express';
+import { callBService } from '../utils/apiAdapter';
+import { AuthenticatedRequest } from '../middlewares/authMiddleware';
 
-export async function getUsers(req, res, next) {
+export async function getUsers(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
     const result = await callBService({
       method: 'GET',
       endpoint: '/users',
-      currentUid: req.user.uid,
+      currentUid: req.user?.uid,
     });
     return res.status(result.status).json(result.success ? result.data : { error: result.error });
   } catch (error) {
@@ -13,12 +15,12 @@ export async function getUsers(req, res, next) {
   }
 }
 
-export async function getUserById(req, res, next) {
+export async function getUserById(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
     const result = await callBService({
       method: 'GET',
       endpoint: `/users/${req.params.uid}`,
-      currentUid: req.user.uid,
+      currentUid: req.user?.uid,
     });
     return res.status(result.status).json(result.success ? result.data : { error: result.error });
   } catch (error) {
@@ -26,13 +28,13 @@ export async function getUserById(req, res, next) {
   }
 }
 
-export async function createUser(req, res, next) {
+export async function createUser(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
     const result = await callBService({
       method: 'POST',
       endpoint: '/users',
       data: req.body,
-      currentUid: req.user.uid,
+      currentUid: req.user?.uid,
     });
     return res.status(result.status).json(result.success ? result.data : { error: result.error });
   } catch (error) {
@@ -40,13 +42,13 @@ export async function createUser(req, res, next) {
   }
 }
 
-export async function updateUser(req, res, next) {
+export async function updateUser(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
     const result = await callBService({
       method: 'PATCH',
       endpoint: `/users/${req.params.uid}`,
       data: req.body,
-      currentUid: req.user.uid,
+      currentUid: req.user?.uid,
     });
     return res.status(result.status).json(result.success ? result.data : { error: result.error });
   } catch (error) {
@@ -54,12 +56,12 @@ export async function updateUser(req, res, next) {
   }
 }
 
-export async function deleteUser(req, res, next) {
+export async function deleteUser(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
     const result = await callBService({
       method: 'DELETE',
       endpoint: `/users/${req.params.uid}`,
-      currentUid: req.user.uid,
+      currentUid: req.user?.uid,
     });
     return res.status(result.status).json(result.success ? result.data : { error: result.error });
   } catch (error) {

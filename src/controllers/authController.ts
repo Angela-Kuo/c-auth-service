@@ -1,14 +1,16 @@
-import { callBService } from '../utils/apiAdapter.js';
-import { generateToken } from '../utils/jwt.js';
+import { Request, Response, NextFunction } from 'express';
+import { callBService } from '../utils/apiAdapter';
+import { signToken } from '../utils/jwt';
+import { AuthenticatedRequest } from '../middlewares/authMiddleware';
 
-export async function login(req, res, next) {
+export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username, pwd } = req.body;
     if (!username || !pwd) {
       return res.status(400).json({ error: 'username 與 pwd 為必填' });
     }
 
-    // 1. 向 B 驗證帳密[cite: 1, 2]
+    // 1. 向 B 驗證帳密
     const verifyRes = await callBService({
       method: 'POST',
       endpoint: '/users/verify',
@@ -21,7 +23,7 @@ export async function login(req, res, next) {
 
     const user = verifyRes.data;
 
-    // 2. 向 B 取得 operations 清單[cite: 1, 2]
+    // 2. 向 B 取得 operations 清單
     const opsRes = await callBService({
       method: 'GET',
       endpoint: `/users/${user.uid}/operations`,
@@ -30,9 +32,9 @@ export async function login(req, res, next) {
     const operations = opsRes.success ? opsRes.data.operations : [];
 
     // 3. 簽發 JWT Token
-    const token = generateToken({ uid: user.uid, username: user.username });
+    const token = signToken({ uid: user.uid, username: user.username });
 
-    // 4. 回傳給前端 A[cite: 2]
+    // 4. 回傳給前端 A
     return res.status(200).json({
       message: '登入成功',
       token,
@@ -46,9 +48,9 @@ export async function login(req, res, next) {
   } catch (error) {
     next(error);
   }
-}
+};
 
-export async function register(req, res, next) {
+export const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await callBService({
       method: 'POST',
@@ -64,11 +66,15 @@ export async function register(req, res, next) {
   } catch (error) {
     next(error);
   }
-}
+};
 
-export async function me(req, res, next) {
+export const me = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
-    const uid = req.user.uid;
+    const uid = req.user?.uid;
+
+    if (!uid) {
+      return res.status(401).json({ error: '未授權的存取' });
+    }
 
     const userRes = await callBService({
       method: 'GET',
@@ -93,8 +99,8 @@ export async function me(req, res, next) {
   } catch (error) {
     next(error);
   }
-}
+};
 
-export async function logout(req, res) {
+export const logout = async (req: Request, res: Response) => {
   return res.status(200).json({ message: '已成功登出' });
-}
+};

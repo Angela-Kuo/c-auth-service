@@ -1,6 +1,15 @@
-import { verifyToken } from '../utils/jwt.js';
+import { Request, Response, NextFunction } from 'express';
+import { verifyToken } from '../utils/jwt';
 
-export function authenticate(req, res, next) {
+export interface AuthenticatedRequest extends Request {
+  user?: {
+    uid: number;
+    username?: string;
+    [key: string]: any;
+  };
+}
+
+export function authenticate(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -14,6 +23,6 @@ export function authenticate(req, res, next) {
     return res.status(401).json({ error: 'Token 無效或已過期，請重新登入' });
   }
 
-  req.user = decoded; // 掛載使用者 uid 與 username
+  (req as AuthenticatedRequest).user = decoded;
   next();
 }

@@ -1,16 +1,16 @@
 import express from 'express';
 import cors from 'cors';
-import { config } from './config/env.js';
-import { errorHandler } from './middlewares/errorHandler.js';
-import { authenticate } from './middlewares/authMiddleware.js';
+import { config } from './config/env';
+import { errorHandler } from './middlewares/errorHandler';
+import { authenticate } from './middlewares/authMiddleware';
 
 // 匯入 6 大路由模組
-import authRoutes from './routes/authRoutes.js';
-import userRoutes from './routes/userRoutes.js';
-import groupRoutes from './routes/groupRoutes.js';
-import roleRoutes from './routes/roleRoutes.js';
-import memberRoutes from './routes/memberRoutes.js';
-import permissionRoutes from './routes/permissionRoutes.js';
+import authRoutes from './routes/authRoutes';
+import userRoutes from './routes/userRoutes';
+import groupRoutes from './routes/groupRoutes';
+import roleRoutes from './routes/roleRoutes';
+import memberRoutes from './routes/memberRoutes';
+import permissionRoutes from './routes/permissionRoutes';
 
 const app = express();
 

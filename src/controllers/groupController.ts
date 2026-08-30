@@ -1,11 +1,13 @@
-import { callBService } from '../utils/apiAdapter.js';
+import { Response, NextFunction } from 'express';
+import { callBService } from '../utils/apiAdapter';
+import { AuthenticatedRequest } from '../middlewares/authMiddleware';
 
-export async function getGroups(req, res, next) {
+export async function getGroups(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
     const result = await callBService({
       method: 'GET',
       endpoint: '/groups',
-      currentUid: req.user.uid,
+      currentUid: req.user?.uid,
     });
     return res.status(result.status).json(result.success ? result.data : { error: result.error });
   } catch (error) {
@@ -13,13 +15,13 @@ export async function getGroups(req, res, next) {
   }
 }
 
-export async function createGroup(req, res, next) {
+export async function createGroup(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
     const result = await callBService({
       method: 'POST',
       endpoint: '/groups',
       data: req.body,
-      currentUid: req.user.uid,
+      currentUid: req.user?.uid,
     });
     return res.status(result.status).json(result.success ? result.data : { error: result.error });
   } catch (error) {
@@ -27,13 +29,13 @@ export async function createGroup(req, res, next) {
   }
 }
 
-export async function updateGroup(req, res, next) {
+export async function updateGroup(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
     const result = await callBService({
       method: 'PATCH',
       endpoint: `/groups/${req.params.gid}`,
       data: req.body,
-      currentUid: req.user.uid,
+      currentUid: req.user?.uid,
     });
     return res.status(result.status).json(result.success ? result.data : { error: result.error });
   } catch (error) {
@@ -41,12 +43,12 @@ export async function updateGroup(req, res, next) {
   }
 }
 
-export async function deleteGroup(req, res, next) {
+export async function deleteGroup(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
     const result = await callBService({
       method: 'DELETE',
       endpoint: `/groups/${req.params.gid}`,
-      currentUid: req.user.uid,
+      currentUid: req.user?.uid,
     });
     return res.status(result.status).json(result.success ? result.data : { error: result.error });
   } catch (error) {
