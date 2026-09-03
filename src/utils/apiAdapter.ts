@@ -5,6 +5,7 @@ export interface CallBServiceOptions {
   endpoint: string;
   data?: any;
   currentUid?: number | string | null;
+  userId?: number | string | null; // 支援 userId
 }
 
 export interface ApiAdapterResult {
@@ -19,13 +20,17 @@ export async function callBService({
   endpoint,
   data = null,
   currentUid = null,
+  userId = null, // 👈 1. 補上解構 userId
 }: CallBServiceOptions): Promise<ApiAdapterResult> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };
 
-  if (currentUid !== null && currentUid !== undefined) {
-    headers['x-user-id'] = String(currentUid);
+  // 👈 2. 判斷使用 userId 或 currentUid
+  const activeUid = userId ?? currentUid;
+
+  if (activeUid !== null && activeUid !== undefined) {
+    headers['x-user-id'] = String(activeUid);
   }
 
   const options: RequestInit = {

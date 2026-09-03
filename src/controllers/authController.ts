@@ -79,6 +79,7 @@ export const me = async (req: AuthenticatedRequest, res: Response, next: NextFun
     const userRes = await callBService({
       method: 'GET',
       endpoint: `/users/${uid}`,
+      userId: uid,
     });
 
     if (!userRes.success) {
@@ -88,6 +89,7 @@ export const me = async (req: AuthenticatedRequest, res: Response, next: NextFun
     const opsRes = await callBService({
       method: 'GET',
       endpoint: `/users/${uid}/operations`,
+      userId: uid,
     });
 
     return res.status(200).json({
