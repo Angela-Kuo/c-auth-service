@@ -12,6 +12,7 @@ import groupRoutes from './routes/groupRoutes';
 import roleRoutes from './routes/roleRoutes';
 import memberRoutes from './routes/memberRoutes';
 import permissionRoutes from './routes/permissionRoutes';
+import operationRoutes from './routes/operationRoutes.js';
 
 const app = express();
 
@@ -20,7 +21,7 @@ app.use(
   cors({
     origin: config.frontendUrl,
     credentials: true,
-    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
@@ -36,6 +37,7 @@ app.use('/api/groups', authenticate, groupRoutes);
 app.use('/api/roles', authenticate, roleRoutes);
 app.use('/api/group-members', authenticate, memberRoutes);
 app.use('/api/permissions', authenticate, permissionRoutes);
+app.use('/api/operations', authenticate, operationRoutes);
 
 // 健康檢查 Endpoint
 app.get('/health', (req, res) => {

@@ -31,10 +31,14 @@ export async function createGroup(req: AuthenticatedRequest, res: Response, next
 
 export async function updateGroup(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   try {
+    const payload = {
+      "groupName": req.body.groupName,
+      "describe": req.body.describe,
+    }
     const result = await callBService({
       method: 'PATCH',
       endpoint: `/groups/${req.params.gid}`,
-      data: req.body,
+      data: payload,
       currentUid: req.user?.uid,
     });
     return res.status(result.status).json(result.success ? result.data : { error: result.error });

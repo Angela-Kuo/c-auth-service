@@ -103,6 +103,20 @@ export const me = async (req: AuthenticatedRequest, res: Response, next: NextFun
   }
 };
 
-export const logout = async (req: Request, res: Response) => {
-  return res.status(200).json({ message: '已成功登出' });
+export const logout = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  const uid = req.user?.uid;
+
+  if (!uid) {
+    return res.status(401).json({
+      error: '未授權的登出請求',
+    });
+  }
+
+  return res.status(200).json({
+    message: '已成功登出',
+    uid,
+  });
 };

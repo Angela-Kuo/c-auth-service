@@ -1,9 +1,15 @@
 import express from 'express';
-import { getPermissions, updatePermissions } from '../controllers/permissionController.js';
+
+import {
+  getPermissions,
+  createPermission,
+  deletePermission,
+} from '../controllers/permissionController.js';
 
 const router = express.Router();
 
 router.get('/', getPermissions);
-router.post('/', updatePermissions);
+router.post('/', createPermission);
+router.delete('/:id', deletePermission);
 
 export default router;

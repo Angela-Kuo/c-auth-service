@@ -18,7 +18,11 @@ export async function getPermissions(req: AuthenticatedRequest, res: Response, n
   }
 }
 
-export async function updatePermissions(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+export async function createPermission(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
   try {
     const result = await callBService({
       method: 'POST',
@@ -26,7 +30,30 @@ export async function updatePermissions(req: AuthenticatedRequest, res: Response
       data: req.body,
       currentUid: req.user?.uid,
     });
-    return res.status(result.status).json(result.success ? result.data : { error: result.error });
+
+    return res
+      .status(result.status)
+      .json(result.success ? result.data : { error: result.error });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deletePermission(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const result = await callBService({
+      method: 'DELETE',
+      endpoint: `/permissions/${req.params.id}`,
+      currentUid: req.user?.uid,
+    });
+
+    return res
+      .status(result.status)
+      .json(result.success ? result.data : { error: result.error });
   } catch (error) {
     next(error);
   }

@@ -68,3 +68,37 @@ export async function deleteUser(req: AuthenticatedRequest, res: Response, next:
     next(error);
   }
 }
+
+export async function modifyUser(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  try {
+    const result = await callBService({
+      method: 'PATCH',
+      endpoint: `/users/${req.params.uid}`,
+      data: req.body,
+      currentUid: req.user?.uid,
+    });
+    return res.status(result.status).json(result.success ? result.data : { error: result.error });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getUserOperations(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const result = await callBService({
+      method: 'GET',
+      endpoint: `/users/${req.params.uid}/operations`,
+      currentUid: req.user?.uid,
+    });
+
+    return res
+      .status(result.status)
+      .json(result.success ? result.data : { error: result.error });
+  } catch (error) {
+    next(error);
+  }
+}

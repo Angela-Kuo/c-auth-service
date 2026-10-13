@@ -32,15 +32,21 @@ export async function addMemberToGroup(req: AuthenticatedRequest, res: Response,
   }
 }
 
-export async function removeMemberFromGroup(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+export async function removeMemberFromGroup(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
   try {
     const result = await callBService({
       method: 'DELETE',
-      endpoint: '/group-members',
-      data: req.body,
+      endpoint: `/group-members/${req.params.id}`,
       currentUid: req.user?.uid,
     });
-    return res.status(result.status).json(result.success ? result.data : { error: result.error });
+
+    return res
+      .status(result.status)
+      .json(result.success ? result.data : { error: result.error });
   } catch (error) {
     next(error);
   }

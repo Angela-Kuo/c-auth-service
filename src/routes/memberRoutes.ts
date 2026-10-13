@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.get('/', getGroupMembers);
 router.post('/', addMemberToGroup);
-router.delete('/', removeMemberFromGroup);
+router.delete('/:id', removeMemberFromGroup);
 
 export default router;
