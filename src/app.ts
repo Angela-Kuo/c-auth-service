@@ -13,6 +13,7 @@ import roleRoutes from './routes/roleRoutes';
 import memberRoutes from './routes/memberRoutes';
 import permissionRoutes from './routes/permissionRoutes';
 import operationRoutes from './routes/operationRoutes.js';
+import auditLogRoutes from './routes/auditLogRoutes.js';
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use('/api/roles', authenticate, roleRoutes);
 app.use('/api/group-members', authenticate, memberRoutes);
 app.use('/api/permissions', authenticate, permissionRoutes);
 app.use('/api/operations', authenticate, operationRoutes);
+app.use('/api/audit-logs', authenticate, auditLogRoutes);
 
 // 健康檢查 Endpoint
 app.get('/health', (req, res) => {
