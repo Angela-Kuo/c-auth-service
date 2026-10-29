@@ -89,9 +89,17 @@ export async function getUserOperations(
   next: NextFunction
 ) {
   try {
+    // T3：把選填的 app query 原樣轉給 B，由 B 驗證格式並回 400
+    const queryString = new URLSearchParams(
+      req.query as Record<string, string>
+    ).toString();
+    const endpoint = queryString
+      ? `/users/${req.params.uid}/operations?${queryString}`
+      : `/users/${req.params.uid}/operations`;
+
     const result = await callBService({
       method: 'GET',
-      endpoint: `/users/${req.params.uid}/operations`,
+      endpoint,
       currentUid: req.user?.uid,
     });
 
